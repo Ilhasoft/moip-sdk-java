@@ -53,10 +53,16 @@ public class Client {
     private final Authentication authentication;
     private final Gson gson;
 
+    private boolean sslEnabled = true;
+
     public Client(final String endpoint, final Authentication authentication) {
         this.endpoint = endpoint;
         this.authentication = authentication;
         this.gson = GsonFactory.gson();
+    }
+
+    public void setSslEnabled(boolean sslEnabled) {
+        this.sslEnabled = sslEnabled;
     }
 
     public <T> T post(final String path, final Object object, final Class<T> type) {
@@ -79,7 +85,7 @@ public class Client {
 
             // Disable TLS 1.0
             // TODO find a way to create a Test for this
-            if (conn instanceof HttpsURLConnection) {
+            if (conn instanceof HttpsURLConnection && sslEnabled) {
                 ((HttpsURLConnection) conn).setSSLSocketFactory(new SSLSupport());
             }
 
